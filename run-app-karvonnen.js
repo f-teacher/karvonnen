@@ -1,12 +1,12 @@
-//This app is an extra feature implementation for the Run.app of the bangle.js.
-//I plan to have it running in the run.app, as an extra screen, accessible by swipe right/swipe left.
+//This app is an extra feature implementation for the Run.app of the bangle.js. It's called run+
 //The calculation of the Heart Rate Zones is based on the Karvonnen method. It requires to know maximum and minimum heart rates. More precise calculation methods require a lab.
 //Other methods are even more approximative.
 g.clear();
-g.drawLine(44,58,88,40);
-g.drawLine(88,40,132,58);
-g.drawLine(44,116,88,134);
-g.drawLine(88,134,132,116);
+
+g.drawLine(40,64,88,52,136,64);
+g.drawLine(88,52,136,64);
+g.drawLine(40,112,88,124);
+g.drawLine(88,124,132,112);
 g.setFont("Vector",20);
 
 //To calculate Heart rate zones, we need to know the heart rate reserve (HRR)
@@ -17,17 +17,16 @@ let minhr = 48;
 let maxhr = 187;
 
 function calculatehrr(minhr, maxhr) {
-  return maxhr - minhr;
-}
+  return maxhr - minhr;}
 
 //test input for hrr (it works).
 let hrr = calculatehrr(minhr, maxhr);
 console.log(hrr);
 
-//Test input to verify the zones work. The following value for HR has to be deleted and replaced with the Heart Rate Monitor input.
-let hr = 176;
-var hr1 = hr; 
-// These variables display next and previous HR zone
+//Test input to verify the zones work. The following value for "hr" has to be deleted and replaced with the Heart Rate Monitor input.
+let hr = 174;
+var hr1 = hr;
+// These variables display next and previous HR zone.
 //get the hrzones right. The calculation of the Heart rate zones here is based on the Karvonnen method
 //60-70% of HRR+minHR = zone2. //70-80% of HRR+minHR = zone3. //80-90% of HRR+minHR = zone4. //90-99% of HRR+minHR = zone5. //=>99% of HRR+minHR = serious risk of heart attack
 var minzone2 = hrr * 0.6 + minhr;
@@ -36,109 +35,75 @@ var maxzone3 = hrr * 0.8 + minhr;
 var maxzone4 = hrr * 0.9 + minhr;
 var maxzone5 = hrr * 0.99 + minhr;
 
-// HR in the middle of the screen
-g.setFont("Vector",46);
-g.drawString(hr1, 72,66);
-//these functions call background images (>6kb each) that show HRzones graphically. Flash was too memory hungry, has to be uploaded in storage.
-function getzone1() {
- return
-require("heatshrink").decompress(atob("yOR4cA///gEB/8H0EAkEBsARCkAsZzMIhMkyVIL9kDGIVJwIDCAQI0pgguDAQI1EAQOAGkpoDAQeEAwqnlhArFAQOQGoxukiQrHzAJIyVAakwCCycCGpACBGrwoJMII1KyRqdFBDMChI1KpI1bFBAMDgI1LkhGCGr6uQUjiONgg1MUjEID4tAB441NQIwAQgQcEyAPIiQ1NUiw1Fe5IPFARNIGqlCDgcwdSikaGokgCp6nLXpIfNpgXSNxVAGtLgLGqrxVgLaaGrIABbTKIDXCQAFhJuHDKY1YgA1HjahPDIOTGjDAFAQUa3gWOagI1bUg0eyXwJh0ggY1bUgo1BpfAQR2AGrkAGotJm4mLoQTCGrsAGoskUZZrCa7gACgJXCuQmCNhUCJIVAGz0EGoMPEwVOGtqQBAQM9EwNJvg1tAAfMGoMnUZA1ogcyFIOcBpA1CpA1jgEMFIX4GpVgGskAnIpBp4LHhJrngEHsjaBnA1wgEZGoMm+A1Ipg1mgFyZwOcBIsBGoNJGs8O5IsB/A1wgExFgNPBIo1CkA2o0gsBvg1xjIsBk+ABAcEBAMkGtEAuQsB3wHDiA1sh3JkmTNglCGoIHEAEs5kmX+AIEkI1rg9k3vAA4cSgECiA1pgEe90AwgGCgVJNVQABgeAgKbDGoMkOYgAngMJkmYAwQ1ByY1rF4WSoAFBHYIFDNlQvBpA1EAoQAqF4NJkA7GAFY1Bkg7EGtsSGoOAgEEGoIEBAFcCGoOQGoanBAFkJkmTU4wArgLUBpCnFAFg1BpKnD4A1tagbdEAFqeDAQOSGtyeDhI1BoA2uNAUBAQNIGtxoDAQNMGt0ENAUEyVJwA2uGoNJiACBkA1ugAyBmACBkg1viQyB4QCBUV8CGomQNl4yBUIWSGt8JkmTAQOSoA1ugJrCyGSpBsvNYMhGV5wIGWFJAQKkBG2ESGQI1CwA1ugQ1EyCiwGoeSGt8JGolAGt0BGolINl4yBpmEHAI1vggyBwACBmA1xkESpMmGt0CGQMkgQCByA2uGoWAAQOSNl5oChI1BoA2uNAUBAQNIGtxoDgmSpOAGuMAGoMkGtqeEiQ1BNlw1BpMAgQ1ByA1tagUgU4WTGtsQGoanEAFg1BkinFAFkSGoOAOIY7CGtvAHYwAqgQvByAFEHYQApgMJagIGCAoJrsAAOEGocBmEAhA0rkCeBoB0FBIIApkMkcBDYrkmZA4kSGoOQGteSpIIEGoLgDAE41HhIIBpA1skAINAEeEFg8EBAMkGtAsJiQIByA1niA1IgQIByRsoGoWABIsJGoNIGuMBGoLjGAEECZwXAcaAAgGoWQBaY1pgQLByVAGs+YBhEJbQQ1koRfCBpI1CbUhrCGpUQGoXANczLKIhoAYgQ1NgAOCpA1xgI1kgEJGpsAwg1CwBrggBcPBwRHNACVCEYVgCJkICIVJGr9JkECGpo2BGoUwGrsSpMkwEgCh41BkmQGr+SdaAUDbTggDUJyjCCgS5BGrSMCyT+BAB8JGoS5BGrprQAAMEC4WTGjEQGqy5EpJtXwg1DfCg1DUi4aDRKsBDTMEDTLyFpMgDCUJGoeSGq0CGocmDCUhGrakFwBuPgUSoAXDyA1XYAIdC4CPCChmEyVIiAXDGrCkDyDFDwgSJdgkSXKikLU4mSpgPFMoYCCJoQ1bAAOSYogCEwRiBBYzsQACA1JmA1IQAI0eAAMEGo8kwQ1IoA1ggDFCFguQGpA0hAAQsHhIIFkw0kAAMIGomTgg1FwA1mbo1gwg7DGdAAEyGSpkQAQJoYA=")) ;
-}
+// HR data: large, readable, in the middle of the screen
+g.setFont("Vector",50);
+g.drawString(hr1, 62,66);
+//These functions call arcs to show different HR zones.
 
-function getzone2a() {
- return
-require("heatshrink").decompress(atob("yOR4cA///gEg8E4kEh/8HgkggEB8EHFa+27dtiVJkmAL9lbto1C0Q1ByQCBGlIyCAQW0GomSpA0mlo1F22JGoinmhYyEAQXRGoxujgQyFAQXaGo5uiiw1I7dEGpGSoA1eGQ4CCoA1JpMgGjkFGpCwGHA+QGrctGo3QCRJuGpA0ZgJoG2gULhJuGGr9oCxykehY1E7QXQNwqkXGorUKAA8ENwkgGqtbGomADKUCUjQ1E2jyVUglAGrGgXyykEGrA0WAAKkEGq1oGrCkFGt6kFpA1UeCgAGgSkDkAVPhY1eUgg1QwEtGr0Agg1Cj+AW50AGr8AiQ1C/wSOpECGr8AhI1B//4JB8LGr8AGoX/8A1NkizOACY1C/4mLGoTaBGsnwGpyhgGon/4A10/4PJgQ1q/g10/+AGtsDGov+CBA1kgEPGwv4GpVIGsMBGov/GtsAg41F/gOGhI1lgEfGwvwGpFJGscAv41E/yxGGs7aG/A1tbQ4MFGoUgG0o1F/g1ugY2FwALDgg1Bkg1lgEPGon+Gt0BNgvABYcSGoJ0EAEUHGon4IQo1ogEfNZICByA1ngY0C+EA7AJCgVJkA0nAAMPGoOAm3bGokkNdDNB//8gO27dsBIQ1ByRspg4CBNYNtwAFBhI1BoA2pAAMGGoOwGolIGtcAGoO24CrBGt8DGoPYAoI1BpI1sgA1B7Y1EkA1sho1BsEAgg1vgE2bQOAgA1Bkg1tgw1B2EAiQ1BHQIAsGoO2gECGoOQGtsbGoPAGuMAGoPbgA1ByQ1uho1BsEJGoNAGtsBGoNsgI1BpBsum3btuAGoNJGt0GGoOwgg1BkA2uGoO2GuUDGoPYGoMkGt0AGoPbiQ1BwA1uho1BsQ1ByA1ugI1Btg1BySivm3btuJGoNAGt0GGoOxGoNINl41B2wyvAAsEyVJkAyugZrB7A1BkhpvGoPbiQ1BwA1uho1BsQ1ByA1ugI1Btg1BySivm3btuJGoNAGt0GGoOxGoNINl41B2w1BpI1vjY1B4A1Bkg1yiQ1BwA1tgY1B7ECGoOQNlw1B7cAGoOSGt0NGoNghI1BoA1tgI1BtkBGoNIGuFtwEEyVJkA2tmw1CgA1Bkg1tgw1B2EAiQ1BHQIAsGoO2gECGoOQGuHAgEJkmSoA1sjY1DgI1BpA1sgY1B7AFBGoNJkA1u7YGCGoMkNlg1FiQ1BwA1rho1BsAFBgQ1ByA1rgI1BtgGChJrtAAI1EgMgUoI0r7CkBMwuSoA1qjZqDAAUkyVIGtUDtu24A1FpKlBGtfbUItJkhsqGo8SGoOQGtlgBAg1ByVAGuMJGoNIGtENGoNsBIo1BpMgGuMEGoMkGs8BGoNtwAKFiQ1ByA1xgQ1ByVAGtOwBY0JGoNINk02GpMAGoNJkA1xgg1BkiuGGsO2BhESbQQ1xgA1CbUg1NhLamGofABxI1Ckg1igw1NgA1CyA1xgQ1kgEbGpsAGoUBbUEGgA1OgI1CkmAGr027EB23YCJkEGoWSGr/bsEGGpsAiA1CpA1ftuAjATOGoVJbTo1C2wTPGobdBGjTUBGoShObQQ1CyVAGt8AiQ1CpI1wgEJUgeAGq8NGq0AGoakYGQI1C4AZTGoakXGrMCGoakVgY1ZeQKkYjY1EQ60EUi41cUgrgBNx0BTYI1D2A1XgEJGoUgiQ7BChgyB7ENGrikDGoeSpASJTYXbsE2AoOAGrKkDU4gCBB4plDAQNsgwCBGjTFCkmAGooCCoIyEAQeANwI1cAAI1JpCYCHA0DGjwABhI1HpKYBGo/AGsEAgg1HkA1IGkIACUg8ba441kNw+DGotgGkrdHyDUnU5sNNDQ="));
-}
+//To shorten the code, I'll reference some variables and reuse them.
+let centreX = 0.5 * g.getWidth();
+let centreY = 0.5 * g.getWidth();
+let minRadius = 0.38 * g.getWidth();
+let maxRadius = 0.50 * g.getWidth();
 
-function getzone2b() {
- return
-require("heatshrink").decompress(atob("yOR4cA///gEg8E48EHkEh/8HgkggEBFa/btuwiwDBL9tt2wxB20CAYXbtA0pFwYCB4FbAwnaGcsBFYYCC7ELAwgCB0CeoAQcBBI5uigY1IsEtBI9tGsEbGpFsgo1I23QGjsGFBACBwA1J7doGswPFiwPH2g1bmzUHCJCnHUjUBEQ3AChcLUj41G2AWOUj0ND4lsC6FbUjg1FahIAIlqkbYIoZTiykE0A1Z4AaUhYbEwA1YXq0FQ4lAGt0AgSkEGq2wGq8AgIeD2gWQgY1dUgvQNajwUUhbaQho1egELGoVoCh+Amw1egEtGoUMCZ2SgA1fgEWGoMNfR2SpEDtg0dAANbGoO24ARMiVJkB+PACEBGoXbGp0kUDwADGoVgGpzaBGsb9MGodAG0M2GoO2GuMAGoXYBpMCGs0bGoLaKGs8AGoVsGuMBGoNt2ANIGs8AgzaC4A1KpA1kbQfYGuMDbQVgBY0JGtEAho1Btg1xgE2bQOwBIsBGoNJGs8GGoO24A1wgEbGoPYBIo1CkA2oGoPbGuUNGoNsBAkEGoMkGtEAmzaBwA1xgw1B2wIEiQ1BHwgAljY1GgEBGtcDtuwNYoCByA1pgEMNwNsAwUCpMgGlQACbQKbCGoMkNdcAmw1BUgY1ByQ0qgO2GoO24AHBhI1BoA1pGQI1C7A1EpA1pho1D7dgOYI1sUInbtgIBGoNJbFU2GodtwA1DkA2qGomwgEEGtsbGoe24EAGoMkGtUDGonYgESGoKnBAFMNGofbgECGoOQGtUBGolgGt0Amw1DtuAGoOSGtcGGomwhI1BoA2rjY1D20BGoNIGtcDGonAGoNJGtcAGonYgg1uho1D7Y1CkA1rgI1Etg1Bkhssmw1Dto1CwA2sGomyGoOQGtkbGoe2GoOSGtkDGonJGoNAG1g1E7I1BpA1sho1D7YysABEEyVJkAyugf///gGoMkGuP8iQ1BwA2uv42BwQ1ByA1uh41B+A1ByQ1ugI1B/0JGoNAG10/GwPBGoNIGt0HGoP4GoNJGt0AGoP/gA1Bkg1uj41B8ESGoOAGtsDGoP8gQ1ByA1xgA1BySiuv42BwEJGoNAGtsPGoPwgI1BpA1tgI1B/0AgmSpMgG1s/GwPAgA1Bkg1yiQ1BwA1sg41B/EAgQ1ByBstGoP/AgMJkmSoA1v8EAgI1BpA1sj41DgA1BpI1sgY1B/gFBgg1Bkg1u/+AAwMSGoIFCAFN/GokCGoOQGtcPGoPwAwUJNdoAB//+AgUBkEAiAzqgICBvwJFyVAGtTQHkmSpBsqFo4HBpKlBGtQtGA4MkGtMEFo8SA4KsGGtcAA4OSNlI1CwAIEhLiHGtjiJAETPJVhI1rBRY1iyQKGgQKCoA1lFQYLHhIKBpA1xgAKBpMgGtCWIgg1BkmAGuDlLADo1MBobakE5sJbQQ1xgA1Ckg1xgA1CyA1xgQ1kgLJPGoUBGsFIgg1OIwI1BkmAUL8giQ1NgEEGoWSa8GAGp0AiA1CdZg1TyTGQdYcgGjcCGoRXQGobacGoahPbQQ1CyVAGt8AiQWVDz4WDUjKKDKig1DyQ1wDLT2FpDxZUiqHEGqsAgIcEoAYXGqyIZJy6kKcAIfOgVIJwg1YgEJGoUgiQCBChgSEDAI0YUggiELBLUEQgY1aUganEEo4JDAQOQAQQ1bLYQ1GAQQJJCoOAGrgABwArIoAJJkg0eAAMJFY9IBJFJGkAABggrHTAI/HGsUAaA8gGo40jNxIGGGkzdHwCeoABIxByESNDQA=")) ;
-}
+//####### A function to simplify a bit the code ######
+function simplify (sA, eA, Z) {
+const zone= require("graphics_utils");
+let startAngle = zone.degreesToRadians(sA);
+let endAngle = zone.degreesToRadians(eA);
+zone.fillArc(g, centreX, centreY, minRadius, maxRadius, startAngle, endAngle);
+g.drawString(Z, 29,80);}
 
-function getzone2c() {
- return
-require("heatshrink").decompress(atob("yOR4cA///8EHgEB8E4kEh/8HgkgoEpFa/btuwiwDB0Bfstu2GIO2gQDCAQI0pFwm24FbAwnaGcsBFYYCC7ELAwinmho1G7dhGoxujgYrH7dsloJHN0MbGpFtwoJI23QGrwoIAQOAGpPbtA0cgwoIB4sWB4+0Grc2Eo1gCJEFIo3aGjMBEQ3AChcLNww1f2AWOUj0ND4lsC6FbUjg1FahLdOtA1VYIoZTgSkE0A1Z4DyVDYnQGtwABQ4lAGq40WUgw1W2A1XUgu0Gt6kFbSI1DwA1aUgjaQho1eUgloCZ8Amw1egEFGqUkgA1fgEWGoWQCRskyEDtg0dAANbGoOSbRskB4MMGr8AlA1BpI1OB5oAWEoLKBGpoPMGrLaLGoeAGsMSEoLaLGs0AGoVIBpMEGs0BLwUgGuAoNGtDaDyAMIGtECbQVAGpRCJADkJbQQ1xgA1CkCuTADzNJGoWSGs4rJcgY1ngArCoA1xgLaCH5wAjGoUgGuMAGoMkwAHDhI1BpA1piQ1ByA1xTQarHGtRkCaAsCGtZkBUIgGBgEBkA1qgmAGIQGCOQykqHAI1CpJrrAANJUgg1BOQY1rTocSAwJyCAFMBGoNIGohyDAFI1BpIEBgQ1vgjTEVAQ1saYreFAFSdEhI1vM4kBAYNIGtoxEAYNJGtoxEggDBkA1tGIY1xgAxBkgDEAFsCGIOQiQDBwA2uGIOSHIY1uhI1BoA5CGt0BGINIHIY2uGINJGuUEGoMhN4Q1ugESawJvCGt8CGoOUGoMgG141ByQ1Bkg1vhI1BqQ1BwA1ugI1BpQ1ByBsvGoNIGV6lIoAwsgSdByVJkpvvGokk0gDBTto1EygDBkDTvHAQDCGtkBGolSAYOAG1g1EpQDByA1sgg1DpIDCGtkAGokhAYNIGtkSGockAYQ1yVAUgGtcCGomAAYRssGomQOQWAGtcJGoeSOQWQGtcBGolAHgVAGuIGCpBsrGogxBAwQ1rgg1DGIIGCkA1wGIMSAwOAG1Q1GgQGByA1qMgQ4CA4IGCoA1vToMBAwNINlQ1EToQGCGtQuDGocEbwYAqgRuCVYg0rAALTCoA8CAYMYGlf4M4I1CAAXbsA2qn/8A4s27dsGtf///AGott2A1pg41B/6hFtu2GuUbGoPYG1I1C8AIEGoPbsA1xho1Btg1oj41B/gJFmzaB2A1xgw1B2w1q/+ABQsbGoPYGs0DGpMDGoPbsA1p+ALGho1Btg1xgE2bQOwG0t/GpUGGoO24A1n/wMIjbaCGuMAGoTakGpsNGoLakGoX/ZZU2bQQ1xgA1C7A1hh41OgY1kgE/GpsAGoUBbUF+gA1OgI1C2wRMa6f4gf//ARMgw1C7Y1f//gh41NgEYGoVsGr//wE4CZw1CtradGoX+CZ41DbTjUBAAShObQQ1C7dgGt8AjY1CtuAGrqMShqkcj41WgE2UjY0DGqkAGoakWg41ZgY1DUis/GrMAgI1DUicBGgn+Xq0GUi5rEGq6kFwBuPgabBGofwGq8Aho1C2EbHYIUMGAP4j41cUgY1D7dsahvjAYS5SUhanEAQIPFMoYAB/kPAQI0aLYW24A1FAQTRBAA+B//gGrgABGpNsv41H/0HGjwABho1HtuPNhHAGsEAgw1H2JrIGkIACGo2wn41GwA1kNw8HGgvgGkrdH4DUnU5nYj4zBDzA")) ;
-}
+//####### A function to simplify next&previous zones ######
+function zoning (max, min) {
+g.drawString(max, 56,28);g.drawString(min, 60,128);}
 
-function getzone3a() {
- return
-require("heatshrink").decompress(atob("yOR4cA///8EHgEg8AFBnH/g8EkEgkIrX7dt20WAYOgL9gyBGoXCAYQCBGlIuE23YrYGE7Q0mmw1F7cLAwqnlhorFAQNhGoxujgYrH7dsloJHN0MbGpFtwoJI23QGrwoIAQOAGpPbtA0cgwoIB4sCB4+0Grc2Eo1gCRJFG7Q0ZgIiG7AULhZuGGr+wCxykehofEtgXQNwqkXGorUKAA8FDAloGqrBFDKcCUjQ1E7DyVDYnQGrHAXyyHEoA1XGiwABrYeDGq2wGrCkFwA1uUgvaGqhLRABMCbQdoCp8NGrykEGp8BgE2Gr0Ago1DERsBkkAGr8Aiw1CyQSNkmQgY1fgELGoVAGpoPBho1fgEoGoNJGpwPNACwlBZQI1NB5g1ZyA1OUMAABiQlBbRY1mgA1CZRUEGs0BGoUgGuAoNGtDaEBhA1obQdAGpWQGssJbQQ1xgA1CkiuJGs7NKchgAeFZMCGtUAFYVAGuMBbQQ/OAEY1CkA1xgA1BkmAA4cJGoNIGtMSGoOQGuKaIcJAAkMgTQFgQ1rMgKhEAwMAgMgGtUEwAxCAwRyGUlQ4BGoVJNdYABpLaBAoQ1BOQZrrTocSGoJyCAFMBGoNIGomQNlg1BaYUCGt7TFbwoAqaYg1CbwQAqTokJGt4xEgIDBpA1tGIgDBpI1tGIkEAYMgGtoxDGuMAiVJkmAGoMkGt0CGIOQHIY2uGIOSHIY1uhI1BoA5CGt0BGINIHIY2uGINJGuUAGoMlN4Q1viTWB0g5BGt8CGoOUGoMgG141ByQ1Bkg1vhI1BqQ1BwA1ugI1BpQ1ByBsvGoNJGV6lIoAzvNYMlGoNIGt8SawOkUuMCGoOUGoMgG141ByQ1Bkg1vhI1BqQ1BwA1ugI1BpQ1ByBsvGoNJUoQ1vgg1BkI1BpA1xkBvCNl4xBkg5DGt0SGoOAHIQ1ugQxByA5DG1wxByQ5DGuNAhIDCGtoxDgIDBpA1tGIgDBpKiuGIcEAYMgGuAxBiTeBwA1sM4kCGoOQNlo1BkgEBAYOSoA1vToMBGoNIGtjTFbwQzq4DTGbwgAo7dsaYZyENdUbtu2ToQICgVAA4I1r7YxDAAUBb4YAlgY1CtuwBQjfEGtW27A1FyRzEAEY1EUgKhEyVIGttgBQY1BpMgGtlsBYg1BkmAGssNGpUSGoOQGuMAGoOSoA1qtqZFhI1BpA1xgA1BpMgGscBGouwBosEGoMkIAw1qgESGoOQGtO2B441ByVAGuMJbQQ1xgA1Ckg2hmw1F4AQIGoTaiGp8SbUkDGp0AGoVINkMNGp0BbQUgbUvYB5UEGsjaDGpcAGoUCbUEObQQ1MgQ1CpI1fv/4bQI1MgEJGoUkGr//8E2GpsAGoeQGr//wA1OUgUkyTadGoX+CZ41DboI0agY0BAAP4Cp8JGoUkwA1vgA1DyQ1wgESUgY1Yj41WgA1DUjA0D//ADCUBUjY1YgEEGoakVg41ZgECUjE/Ggf+Q60JUi41cUgrgBNx0DTYI1D+A1XgESGoVAAQNIChgwB/EfGrikDGoQ7ByARIgJnD8F/AYLwTUhNIU4gCBB4plDAAP8h4CBGjQABgVJgA1FAQWDGQgADwJuBGriSBGpOQTAQAF/0HGjoACiQ1HySYBAA/AGsEAhI1HoJrIGkIACGo1In41GwA1kNw8HGgvgGkrdHkDUnU5sfNDQ")) ;
-}
+//draw background image (dithered green zones)(I should draw different zones in different dithered colors)
+ const HRzones= require("graphics_utils");
+ let minRadiusz = 0.44 * g.getWidth();
+ let startAngle = HRzones.degreesToRadians(-88.5);
+ let endAngle = HRzones.degreesToRadians(268.5);
+ g.setColor("#002200");
+ HRzones.fillArc(g, centreX, centreY, minRadiusz, maxRadius, startAngle, endAngle);
+ g.setFont("Vector",24);
 
-function getzone3b() {
- return
-require("heatshrink").decompress(atob("yOR4cA///8EHgEg8AFBnH/g8EkEgkIrX7dt20WAYOgL9gyBGoXCAYQCBGlIuE23YrYGE7Q0mmw1F7cLAwqnlhorFAQNhGoxujgYrH7dsloJHN0MbGpFtwoJI23QGrwoIAQOAGpPbtA0cgwoIB4sCB4+0Grc2Eo1gCRJFG7Q0ZgIiG7AULhZuGGr+wCxykehofEtgXQNwqkXGorUKAA8FDAloGqrBFDKcCUjQ1E7DyVDYnQGrHAXyyHEoA1XGiwABrYeDGq2wGrCkFwA1uUgvaGqhLRABMCbQdoCp8NGrykEGp8BgE2Gr0Ago1DERsBkkAGr8Aiw1CyQSNkmQgY1fgELGoVAGpoPBho1fgEoGoNJGpwPNACwlBZQI1NB5g1ZyA1OUMAABiQlBbRY1mgA1CZRUEGs0BGoUgGuAoNGtDaEBhA1obQdAGpWQGssJbQQ1xgA1CkiuJGs7NKchgAeFZMCGtUAFYVAGuMBbQQ/OAEY1CkA1xgA1BkmAA4cJGoNIGtMSGoOQGuKaIcJAAkMgTQFgQ1rMgKhEAwMAgMgGtUEwAxCAwRyGUlQ4BGoVJNdYABpLaBAoQ1BOQZrrTocSGoJyCAFMBGoNIGomQNlg1BaYUCGt7TFbwoAqaYg1CbwQAqTokJGt4xEgIDBpA1tGIgDBpI1tGIkEAYMgGtoxDGuMAiVJkmAGoMkGt0CGIOQHIY2uGIOSHIY1uhI1BoA5CGt0BGINIHIY2uGINJGuUAGoMlN4Q1viTWB0g5BGt8CGoOUGoMgG141ByQ1Bkg1vhI1BqQ1BwA1ugI1BpQ1ByBsvGoNJGV6lIoAzvNYMlGoNIGt8SawOkUuMCGoOUGoMgG141ByQ1Bkg1vhI1BqQ1BwA1ugI1BpQ1ByBsvGoNJUoQ1vgg1BkI1BpA1xkBvCNl4xBkg5DGt0SGoOAHIQ1ugQxByA5DG1wxByQ5DGuNAhIDCGtoxDgIDBpA1tGIgDBpKiuGIcEAYMgGuAxBiTeBwA1sM4kCGoOQNlo1BkgEBAYOSoA1vToMBGoNIGtjTFbwQ1saYreEAFbTCOQg0sToZyDoAHBGlfYGIYACgLfDAFEbtipHb4QAogdt23Ab4xzEGtHbUIuSpBsqGo0AGoNJkA1ssAIEGoMkwA1xiQ1ByA1oho1BtgJFGoOSoA1xhI1BpA1ngI1BtrPGGoNJkA1xgg1BkgKGGsewBY0SGoOQNk02GpMAGoOSoA1xhLaCGtG2BhA1Ckg1xgA1CbUMwGp8SbUc24A1EAoIAIGoVIT0MAgw1NgLaCkA1gtg1OgEEGsEB2wyB2EbGpsAGoUCbTg1DGQI1OgQ1CpI1bho1D7Y7B7AVMhI1Ckg1gbQI1NgA1DyA1ZGQQCD2EYC5w1CyTaYgY1Ga5o1GboI1WjY1H7YZPhI1CkmAGqoyGAQVgDR41DyQ1wgESUgbXdUKAACGoakVGrcBUjENGrUAgg1DUik2GrUAgSkXgw1F7A1UgEJUi8bGrakFcAJuOgf/4Y1E4A1WgESGoVAAQNIChn///4ho1cUgY1CHYOQCJEBGgIAB8I1DGjCkDpCnEAQIPFj40D//8mw1B2A1agECpMAGooCCwYyEAAeAGoLtOAB0BGpOQv41H/0btg0cAAUSGo+Sh5sI4FgGr8AhI1HoJrIGcAADGo1In7XHGshuHg40F8A0lbo8gago0oU40fNDQ=")) ;
-}
-
-function getzone3c() {
- return require("heatshrink").decompress(atob("yOS4cA///8H/gEg8EH8E4/8Hgkg0H3Fa/btu2iwDB0BfsGQI1C4QDCAQI0pFwm27FbAwnaGcsBFYYCDhYGFU8sNGo9hGoxujgYrH7dsloJHN0MbGpFtwoJI23QGrwoIAQOAGpPbtA0cgwoIB4sCB4+0Grc2Eo1gCRJFG7Q0ZgIiG4AULhZuGGr+wCxykehofEtgXQNwqkXGorUKAA8FDAloGqrBFDKcCUjQ1E4DyVDYnQGtwABQ4lAGq40WAANbDwegGquwGrCkFwA1uUgvaGqhLRABMCbQdoCp8NGrykEGp8BgE2Gr0Ago1CgIiNgMkgA1fgEWGoW2Gp2QgdsGjoABhY1C7ARMkmSoEMGr8AlA1B7Y1OpI0gSQQ1BSJg1CbQI1jtuwGp2AG0M2GoO24A1wgA1CbRUEGs0DGoVgGuEAhraCFBA1obQgMIGtDaD4A1KyA1ljbaCGuMAGoVsBQ0SGtMBGoNtZow1qgEGbQQJFgQ1ByQ1ngA1C4A1xgbaCBIo1CoA2oGoVgGuMBGoNtwAIDhI1BpA1ogE2GoOwGuMAGoO24AHDgmSpI1qjY1BBAsCGtcAUIsAkmAgI1rgOAgdsUIlAGtakDwDXEkA1s7baEGoMkNd224AFBiQ1BOQQApgY1B7A1EyBssGoPbsEAgQ1vgI1BtgFBGoOSGtkAm3btrTBGoVAGtkGGoO2gEJGt8AjY1B4EBGoNIGtsDGoPYgA1BpI1tgA1B7Y1DkA1tho1BsEEGuEAm3btuAGoMkGt0GGoOwiQ1BwA2uGoO2gQ1ByA1ujY1B4A1ByQ1ugY1B7EJGuEAhu27Y1CoA1ugI1Bto1BpBsvmw1B0mSpI1vgw1B2g1BkA2vGoO2GoMkGt8bGoPSGoOAGt0DGoPYNN4A7hMkyVAGV0B23bto1BpBpvmw1B0mSpI1vgw1B2g1BkA2vGoO2GoMkGt8bGoPSGoOAGt0DGoPaGoOQNl41B7cJkmSGt8NGoMBGoNIGuNgGoNJGt0BGoNsgg1BkA2um3btuAGoMkGt0GGoOwiQ1BwA2uGoO2gQ1ByQ1x4EJGoNAGtsbGoUBGoNIGtsDGoPYgA1BpKiuGoPbgEEGoMkGuFggESGoOAGtkNGocCGoOQGtkBGoNsAoI1ByVAGt1tToMBGoNINlk2GocAGoNJGtkGGoOwAoMEGt0Ajdt2wFCiShtAAMNGocCbYQ0rTQXAA4cJkjfCAFAtGgVJkmSGtmSaYg1CoA1pZ4OSUgQHJGtsAA4UgG1ItIA4LiFGtsSGoOQGtEEMYQJFA4OSoA1xhLiHGszPGVhAAiGpIKLGtUSbQQ1pyALHGoVIGuMBbQQ1lSwQ1IgA1Ckg1nZhR5LGtMCBoVAGuEABoTajGp0BGoUgGsKTPgg1CiA1giEJZJx8BkESbUAhBf541CbUAhCGp0BGoUkGsEkgSQPCYWSGrr8BkmQJKWSpA1fUJzaDCYLdBGuEBGoSCRABMEGqgWXDz7aDUikSFgaKDKig1DUiRlCYAyKVDIlICh0JQIgFDAQK8VDIYCBZyASCAog1WgSkOB4oSDGra+FyEJSILqLAQYYFGqykFEQIfHZwoCCvAFDwA1YSgdAEQRuFMQgCEcAY1ZFAY1DAQNIBoY1IkESAoI0ZUgdILAYrFBJEkwR+GADA1JSgIJIyEJGjpuDFZCYCBIuT4A1ggQrHyQJJc4gAdgIrHoA1IpI1hNxFIhJrqAAcEFwh1IGkqnGkA1GwA1oORKemABQ1CDS4A="));
-}
-
-function getzone4a() {
- return
-require("heatshrink").decompress(atob("yOS4cA///8H/gEg8EHgH8/8HggHBnArX7dt20WAYOgL9gyBGoXCAYQCBGlIuE23YrYGE7QzlgIrDAQcLAwqnlho1HsI1GN0cDFY/btktBI5uhjY1ItuFBJG26A1eFBACBwA1J7doGjkGFBAPFgQPH2g1bmwlGsASJIo3aGjMBEQ3AChcLNww1f2AWOUj0ND4lsC6BuFUi41FahQAHgoYEtA1VYIoZTgSkaGonAeSobE6A1uAAKHEoA1XGiwABrYeDGq2wGrCkFwA1uUgvaGqhLRABMCbQdoCp8NGrykEGp8BgE2Gr0Ago1CgIiNgMkgA1fgEWGoW2Gp2QgdsGjoABhY1C4ARMkmSoEMGr8AlA1B7Y1OpI0gSQQ1BSJg1CbQI1jtuwGp2AG0M2GoLaLgg1lgA1CbRQ1ngY1CsA1wgENbQQoIGtDaEBhA1obQfAGpWQGssbbQQ1xgA1CtgKGiQ1pgI1BtrNGGoWSGs0AmzaCBIsCGtUAGoXAGuMDbQQJFGoVAG1A1CsA1xgI1BtuABAcJGoNIGtEAmw1B2A1xgA1B23AA4cEyVJGtUbGoIIFgQ1rgChFgEkwEBkA1qhuAgdsUIlANdakDwDXENdYAB7baEGoMkNd224AFBiQ1BOQQApgY1B7A1EyBssGoPbsEAgQ1vgI1BtgFBGoOSGtkAm3btrTBGoVAGtkGGoO2gEJGt8AjY1B4EBGoNIGtsDGoPYgA1BpI1tgA1B7cAgg1BkA1tho1BsA1xgE27dtwA1Bkg1ugw1B2ESGoOAG1w1B20CGoOQGt0bGoPAGoOSGt0DGoPYhI1BoA2uGoPbGuUBGoNtGoNIGt0Amw1B0mSpI1vgw1B2g1BkA2vGoO2GoMkGt8bGoPSGoOAGt0DGoPYNN4A7hMkyVAGV0B23bto1BpBpvmw1B0mSpI1vgw1B2g1BkA2vGoO2GoMkGt8bGoPSGoOAGt0DGoPaGoOQNl41B7cJkmSGt8NGoMBGoNIGuNgGoNJGt0BGoNsgg1BkA2um3btuAGoMkGt0GGoOwiQ1BwA2uGoO2gQ1ByQ1x4EJGoNAGtsbGoUBGoNIGtsDGoPYgA1BpKiuGoPbgEEGoMkGuFggESGoOAGtkNGocCGoOQGtkBGoNsAoI1ByVAGt1tToMBGoNINlk2GocAGoNJGtkGGoOwAoMEGoMgG1g1B2wFCiShtAAMNGocCoEB/40raAMG4AHDh//8A1qhMkwAHEv///4IFGs2SoA1G+A1pgI1BUgIHDGoP/VQg1sgE/GoP4NlI1CkAIENgXgGuMfGoP8GtEEGoMkBIt/GwPwGuMPUYXAGtWABQs/GoP4Nk41Jg5sC8A1wgEfGwQLHGsOQBY9/GoPwGssSGpUPNgXAGs+SBhE/GwQ1xgA1C/g1xgY2CbUY1NgF/bUo1DoAOJgI1C/A1hgQ1NgEHGskAhI1NgEfGoMfbUESoA1ObQI1BbUDXBgA1OgI1C/41gkkCGpqkD//8GsGQCZ8DGoP//w1cyQ1ByQUQv42C/A1fUJ7aBGoX/8A1vgEHGwfwBIa+QAAcEGqsAj42DUgb3BGqQyBGqraEUgY1Be6Q1YbQikCgQfCAQIbOGrAABGwikBGogCCcBUJCQg0UgEDGwn8Go4lKB56kSxI1HSJESNYh7KABsHGoeBGo9ICo0EH4I1cUgnxGo9JQIw/CHAIPBwA1YUgfwGpEgCIcCBIkSAoI0ZAAX//w1IFAQJHHYQ1cgf+RwYCFwAJIyEJPAgAbFZKYCBgwzfGpWSaggCEoA1gMJNAOpBrhgEBGo9IhIJGGkRuKH4w0lNxEgT04AHgSaFGVY4IwAeaA")) ;
-}
-
-function getzone4b() {
- return
-require("heatshrink").decompress(atob("yOR4cA///8EH8H/gEggH8/8Hgkg8E4Fa/btu2iwDB0BfsGQI1C4QDCAQI0pFwm27FbAwnaGk02GovbhYGFU8sNFYoCBsI1GN0cDFY/btktBI5uhjY1ItuFBJG26A1eFBACBwA1J7doGjkGFBAPFgQPH2g1bmwlGsASJIo3aGjMBEQ3YChcLNww1f2AWOUj0ND4lsC6BuFUi41FahQAHgoYEtA1VYIoZTgSkaGonYeSobE6A1Y4C+WQ4lAGq40WAANbDwY1W2A1YUguAGtykF7Q1UJaIAJgTaDtAVPho1eUgg1PgOAmw1egEFGoYiNgO2gA1fgEWGoWSCRs27EDGr8AhY1CoA1N7dgho1fgEoGoNJGpxqgAAY1Bkg1ObQI1kyA1O4A1hiQ1BbRY1mgA1CbRUGGs0BGoUgGuEAgjaCwA1wbQgMIGtDaDoA1K7A1lhLaCGuMAGoUkBQ0bGtMAGoWAGpHbGs8SbQQJFgY1qgA1CoA1xgLaCBIo1CsA2oGoUgGuMAGoMkwAHDho1Btg1piQ1ByA1xgA1ByVAA4c27dtOggAlhI1GgEDGtcAUIprBgEB2A1qghiBkgGCg3bsA0qUgibCGoNtNdYABpLaBAoQ1B2xruyVAAoMbGoPAGtcBGoNIGonYNlg1BpMggEDGt8AGoMkAgI1B7Y1tiQ1BwA1DsA1sgQ1ByEAho1vgEJbQNAgI1Btg1tgI1BpEAm3btqnBAFg1BpMAgw1B2A1tgg1BkA1xgESpMkwA1B2w1ugQ1ByEbGoPAG1w1ByUDGoPYGt0JGoNAGoPbGt0BGoNIho1BsA2uGoNJGuUAGoMlGoNsGt8SpMkGoNtwA1ugQ1Byw1B2BsvGoOSGoO2Gt8JGoNbGoPAGt0BGoNLGoPYNl41BpIyvAAsN23bsAzvNYMlGoNsGt8SpMkGoNtwA1ugQ1Byw1B2BsvGoOSGoO2Gt8JGoNbGoPAGt0BGoNLGoPYNl41BpI1B7Y1vgg1BkI1Btg1xkE27dtwA2uGoMkgw1B2A1uiQ1BwA1B2w1ugQ1ByEbGoPAG1w1ByUDGoPYGuNAhu27dgGtsJGoUBGoNsGtsBGoNIgE27dtwA2tGoNJgEGGoOwGuEggEbtu24A1sgg1DgY1B7BstGoMkAgI1B7dgGt+AgEBGoNsGtkSGocAm3btoFCAFMCGoOQAoMGGoOwNlg1ByQFCjZrtAAI1EgdggE/GlafBgVAA4cB//gGtUSpAHFv///g1qgTYBaQg1B//wGtjYDUIX//xsqGo0An42B/A1soAIEGoP/8A1xj41B/g1ohI1BpAJFv42B+A1xh41B/w1ngI1BpIKGn42B/A1xg41B//gGtMgBY0fGoP8Nkw1KgF/GwPwGuMPUYXAGs8kBhE/GwQ1xgA1CbQUQGt0fGwTaBiVAGseABxN/GoP+GoLqJAC0EGpsBNgX4GoISLGsUAg41FyRseLB41GpBrdgA1OgY1FAQI1bkmQgICBCJkPGoykbDgNAgg1NgE4GoykaD4UAiDqRGoakaDicCGo6kXagIcCUJwABhI1HQ4I1qQIgCEkA1rgA1HbSqLEGqTaIwA1TDLDaHGtsAgg1FQ6SIGGqkAiQ1YDIo0UQ42SGt8AGolBRR8BCAI1DkA1XKglAAQNIQR2QhI1cUgdIbpx/DJIVJGjKkDpEEE4bGHMoYTEP5qkRLogCEwIHGNARuBGrhdBGpOQGpEkgQ0dNwgtHVgwCCwA1gZgwCCoA1IGkIACFo1IOw40kNxECOYw1mbo0gak6nNOYRoYA=="));
-}
-
-function getzone4c() {
- return
-require("heatshrink").decompress(atob("yOR4cA///gH88EH8AFBkH/g8EkFA3YrX7dt20WAYOgL9gyBGoXCAYQCBGlIuE23YrYGE7Q0mmw1F7cLAwqnlhorFAQNhGoxujgYrH7dsloJHN0MbGpFtwoJI23QGrwoIAQOAGpPbtA0cgwoIB4sCB4+0Grc2Eo1gCRJFG7Q0ZgIiG7AULhZuGGr+wCxykehofEtgXQNwqkXGorUKAA8FDAloGqrBFDKcCUjQ1E7DyVDYnQGrHAXyyHEoA1XGiwABrYeDGq2wGrCkFwA1uUgvaGqhLRABMCbQdoCp8NGrykEGp8CgE2Gr0Ago1CgI1OpEAGr8Aiw1CkgSNpMggY1fgELGoQjNpIPBho1fgEoGoOSGpwPNACo1CZQI1NB5g1YZQI1NpJsiEoTaLGs0AGoTKKhI1mgQ1CoA1wFBo1obQgLHgI1obQeAGpUgGssSbQQ1xgA1CpCuJGs7NKchYAfFZMEGtUAFYWAGuMCbQQ/OAEY1CoA1xgLaCBAkSGoOQGtEAGoUgGuKaIcJAAkMgTQFgg1rMgKhEgFIgECoA1qhIxDAwRyGUlQ1EyRrrAAOSbQIEBgI1BOQZrrToY1BOQYApgQ1ByA1EkA2sGoLTCgg1vaYreEAFbTEGoTeCAFSdEiQ1vGIkCAYOQGtoxEAYOSGtoxEhIDBoA1tGIY1xgAxBpMBAYNIGt0EGoMgHIQ1ugAxBkg5DGt0SGoOAHIQ1ugQxByA5DG1wxByQ1ygI1BpRvCGt0AGoNJN4Q1vgg1BlI1BoA2vGoMlGoNIGt8SUAOkHII1vgQ1Byg1BkA2vGoOSGV6lIwAyugJrBpQ1ByBpvGoNJUuUEGoMpGoNAG141Bko1BpA1viSgB0g5BGt8CGoOUGoMgG141ByQ1Bkg1vhI1BoQ1ByA1xoBvCGt0BGINIHIY2uGINJHIY1ugg1BkA5CGt0AGIMkHIY1xwESAYQ1tGIcCAYOQGtoxEAYOSUVwxDhIDBoA1wGIIDBpI1tM4kEGoMgGtkBGoNIAoI1BkmAGtydCgQ1ByBssaYreCGtjTFbwilraYRyEVgSlrGokEM4KlCN4IAn7AxDAAUCGoVIGtEbtipIcQgAlgdt23AGpEkOwg1l7YHDiQ1EyBsnGozXDAQVAGtNgA4cJGolJGt0BGosgGssNGoNsBAkEGokkwA1tgESbQo1kgI1BtpfFgQ1FpA1tgEJbQo1n2AKGGoskG0c2GpEAgg1FyA1tgESbQtAGsm2BY8CGoraiGpcAhI10gA1r4AOJGs0GGpraEGuEAGoVPGsMAjY1NgI1DyBrggA1NgEEGoWSoA1em3YgO27ARMiQ1CbT827dggw1NgFIGoUkGr9twEYCh41CbTo1C2wUQGoWSOIIAZagI1CUJwABgQ1CpMgGt8AhI1CkmAGt8AgikDoA1Xho1WgESUjYyBGoXADKY1DUi41ZgI1DUisDGrIABGoakUjY1EXq0CUi41cUguANx8BTYI1D2A1XgEEGoWQhI7BChgyB7ENGrikDGoYFBCRKbC7dgmwFBXKSkLU4gCBB4plDAQNsgwCBGjQACyVAGooCCkIyEAQeANwI1dgA1JkiYCHA0DGjwABgg1Iww1I4A1ggECGo+QGpA0hAASkHjbXHGshuHoY1FsA0lbo9Iak6nNhpoaA==")) ;
-}
-
-
-function getzone5a() {
- return
-require("heatshrink").decompress(atob("yeR4cA///8EH8H/gH8gkg/8HgEggH4Fa8CpMkyFbtu2wBgsgmSGoOSpEt23bHAPQGtIyBGoQCBiw1CAQRxnGo2ShY1EAQOgGtlJgo1FAQNoGtckwQ1GAQPaGsEEGpGSoI1HAQO0Gz41JpMAGpCngiQ1HyAPFhY4H6A1bgQ1HCRI4H0A2aGo0gJRinGoA1YgI1SAARuF2g2YGqoABlo4EtA2Xa54AIranEwA1ViQ1EDiinFGyo1EyD1VNwnQDSjaEX60CNzEEGodAe68tNy7aDpA1XAANbNwegbSsgGzMANwfabSo1agELNyo1CyA2bgEWNwWACh/AhJuBoA2cgKkDYx0DthuCGrhuDtAkBJR22NwQ2egEt0ECLR0G7ZuBXCAAPgWALQL/Nja4B4A1fAAT/BNxo1BNwQAhGoJuMbQPbHAI2iGoJuMbQI1B7A2ighuNgakCsA2iNwdIBpMNUgWAG0ZuDFBM2bUpuPjbalNwwMIbQVsG0sCNwVABY0BbQWwG0sAGoJuJbQXAG0xuDBQ0DUgVgG00BNwUgUhOAG00AiRuByAJFgykCGs5uEUhI2ogA1BkiaFho1Btg2phJuBpCkxgEENwQIEjY1B7A2pgA1ByVAcoiksgA1BpIJGtuwG1UCGo0bAQKkrgMggEJA4cN23AGtQAChMkwAFCm3btoGDN1LdBpCkDtpuuyVJkikE7dgG1g1BySkF2A2sGoNJkCkygRuByCkygJuBpCkygCkBkikygEJNwNAUmMAghuBkEAgykwgSkByEAgakB7A2tgKkBpCkygESNwOAUmMAhJuBoCkxgEEyVJkEBUgNsG10CUgOQgCkB2w2ugKkBpEAGoPbG10AUgMkUmUAhJuBoCkxgEENwMgUmUCUgOQmxuBwA2ugKkBpEbNwPAN16kBkkNUgNgG141ByUGUgOwG141BpIyvAA1//4AC/gzthJuBGwn+G1sEUgM/Gwf/8A2sgVJkmfGwnwG1kBUgNPGwn4UtqkBk42E/g2tUgOTGwn+G1qkBpI2E/42tiRuBx42EwCkuyUHGwnAUl8DGwn8Ul+BGwn+G1kJNwNAGwn/G1kEUgMgv42EwCkuyEHGwn4Ul8DGwn8Ul8BGwn+G1cCUgUAGwn/8CktpEAh42E+CkugEHGwn4Ul8DUouAUl0An42E4CkugEfGtykFgEPbV0AgKkEgA2CGtZuDUgUAv41Bgw1rkgCBUgUAg4CB7dgG1USUQYAD7dt2A2qhLbBA4kDtu27akryTbEAAM2NwOAUlVJkgtFjZuB7A2pGoOSoAIEgKkBN1MBUgQKGGoO24BtoGoKkGgENNwNsGs8CUgQKGgxuCUmUAGoPbsA2mgikCBY82N1MSUhMAgZuCG00JGoNIBhBuC2A2lbQUgBhEbN1DaCyAMIgI1BN0sCbQVABxJunbQVJBxUNN0w1CkmAB5Q1B23YG0USUgQPLNwZGLACw1CpAQMNwRtigikBkAQMUgUBbsEENwSTNg3bsACBGz+SoBuBoASNbQMbtpuegRrBNwITOgynCNz0JkhuCCh8BGoJueGoJuCAB7aBNwVgGrTXBGoLaPboZuC2w2aiQ1CbR5uiGoakRAAMNNwfAGq8JGoeQDKZuDtuAGqsBGoeSDShuE7A2Vgg1DpAbVNwmwDSg1DpMgRKxuD7dgGq8ke68bNwe2DCQ1EyA2XgE2bobjBCp0SpDaEGrEAgZuCtkGHYOAGpgyBgQ1CpA2ZgAyC2CqDtjXNoCkCGrQABUIKkCVQQ4HagYCBkBxBkA2cgEbUgY4EAQKeCGokkyEJkg1dAAMwUgYCFFgI1FUITtMU6xuHwg1Hkg1hU4RuH4SkIGsQABbo9hGtgABgJuF2A1tcA/Ya9BxMtg1CD7A")) ;
-}
-
-function getzone5b() {
- return
-require("heatshrink").decompress(atob("yeR4cA///8EHgH88H/gkggH4/4JBAoIAWgVJkmQhu27ZgtgmSGoOSpE27dtHANgGtIyBGoQCBjY1CAQQ1uySkCHAnAGtlJgw1FAQOwGtckwY1GAQNsGsEEGpGSoI1HAQPYGz41JpMAGpCngiQ1HyAPFho4HsA1bgQ1HCRI4H4A2aGqIABganGwA1YgI1SAARuF7A2YGqoABmw4E2A2XGqwABU4o1WiQ1EYainFGyo1EyD1VNwlgDSjaERK0DNzEEGodAe68GNy7aDpA1XAAJuE4DaVkA2ZgBuDtjaVGrUAhpuVGoWQGzcAjZuCCqMJNwNAGzkBUgbGPvxuCGrhuD2AkBJR3/8BuBGz0Am3AgRaOg///0AbToACgbJCEhsf/5uBGr4ACf4JuNv42BNwIAhGoJuMbQIACG0Q1BNxo1C/g2ighuCwDsKGwXwG0RuDpANJh42C4A2jNxs/bUpuPj7alNwwMIv42B/w2lgRuCoCkK/A2lgA1BNxLaC8A2mNwYKGgY2C+A2mgJuCkAKGGwXAG00AiRuByAJFg42CGs5uEUhOAG9A1BkgsFh41B/w1ogEJNwNIUmMAghuCBAkfGoP8G1MAGoOSoDlEUlkAGoNJGologF//A2qgQ1EgEF23QgCkrgMggEJHofbtu0GtQAChMkwAEBhdt23bU4JurboNIUgZuB23aG9eSpMkUgg4CU9Y1BySkFN1o1BpMgUgrdsgRuByCkygJuBpAEBUmEAUgMkUmUAhJuBoCkxgEENwMgUmUCUgOQgCkxgKkBpCkygESNwOBUmMAhJuBoCkEto2sgmSpMgrakxgSkByEtUmMBUgNIiykxgCkBkikE22AG1kJNwI1E7dAG1kENwM2UgmgG1kCUgObNwnQG1kBUgNNUgloG1kAUgMmUmUAUgOTUmUAUgNJGFoAJlu27QyvhJuBoCkCG18EUgMgrbaBwA2ugVJkmQUgPboA2ugKkBpEWUgOgUt6kBkkLUgPQG141ByUFUgNoG141BpMArZuBwA2uiRuBwEtNwNAUmMAi3btugUmULUgPQUmUFUgNoG10JNwNAgSkB2g2ugikBkEBUgPboA2tgSkByEAixuB0CkxgELNwPQUmMAgqkBtCkygSkB22AUl9IAoMtNwKqBUmEAixuB0CkxgELUgPaUmUAUgNtUmUArZuBwCkxgEtNwNAG1cBUgsC7doUlhuCUgcBGoMEUtc2AQKkDAAWSUtcbtgIGyTkBG1UN23bVYzkBUlfbtuwBAg1Bcgikntu24AIEiRuBcgwAjGoPbsAIEgJuCGtEBGoNtwAKFGoMkBIwAiGoKkGgEJNwNIGs8DUgQKGghuCUmUAGoOSoA2mgykCBY41BN1EbUhMAgRupho1BtgMINwUgG0s2UgOwBhESNwQ2lbQXYBhEBN08DbQVgBxJunbQVtwAOJhJumbQW24APKGoMkyA2ijakCB5ZuDG0Q1CtgQMNwQ2igykB2AQMNwOQgLdggxuC7ARMgmSoACBGz/bsBuBsASNbQMSpJuegZrBNwOACZsEHAMkNz0N2xuCCh8BGoJuem3bNwQAPbQJuCoA1aa4I1BbR7dDNwUkGzUbGoTaPN0Q1DUiIABhJuDJyIAGho1D7AZTNwdJGq0BGofbDShuEyA2Vgw1DtgbVNwkkDSg1DtuwRKw1DyVIDKUbGoe2e68SNy41E7A2XgDdEcYJrPtjaEGrEAgSkDgg7BUJ8DGoVsGzMAGQUgVQbgKNAdgmwFBwA2agChBUgSqCHA4vCa4WwOIOwGrYABiSkDHAgCBTwQ1E23Yhu2GroABUggCFFgI1FUIXAGz6nCNw8GGo+2GsKnCNw+DUhA1iAALdHoI1sAAMBNwsgGtrgHyDXoABQ4BpEGGoOADy4")) ;
-}
-
-function getzone5c() {
- return
-require("heatshrink").decompress(atob("yOR4cA///gH48EH8H/gkggH8/8HgGwFa+SpMkjdt23AL9gyBGoWDGoPbAQI0pGQQCCyA1E7dsGkwyDAQcNGoinmhI1HoI1GN0cCGQoCCpE2GoxuiiQ1IpMGGpHbsA1eGQ4CCgA1JtuwGjkEGpAPFgY4H7A1bNA9ACRJuGtg0ZgI1GyAULhpuGGr8gCxykehI1EpAXQNwqkXGorUKAA8GNwmwGqrUEyQZTgakaGomQeSqkEsA1YwC+WUggcTGog0WAAKkEGq0gGrCkFGt6kFtg1UGjUAgakD2AVPhI1eUgg1PgnwGr8Agw1CgITOyfAGr8AjY1CkgSNyVPgQ1fgENGoWAGptJnkJGr8AmA1ByQ1OknwGsEAGoVIGpzaBGsdJkA1NIxoAVGoTaLiQ1CIxgAWLoY1OIxYAWgQnCoA1OIxQAXhInCGp5GJbTh5LGsraDZI41GpA1iSwY1xgAnKGtUBFQQ1xgAqDBIsJGtUAFQWAGpR5HAD0CFQSsIGtDPDoA1xFobiIAQMgG0wqHGtsAFoWAA4w1qiQ1GgEJNwY1ngBgGiUAgg1rhICBpAGCgQ9BAQJ2GUkw1EkmQgA1rTIoEByQEBiBrrMYcJGoNAGdKcGGobfDAFKcCMwMBGt4wFAgNJGtgwFAgUgGtkEGAYEEAFkSbQOAgA1Bkg1tgQwByA6FAFgwByQ6FAFkJGoNAGuMAGoNJOAgAtgg1BkBwDG1w1BkkBGoNIGt0SGoOAUwYAtgQ1ByCmDG1w1ByQ1yaobcCGt0AaoTcDGtyfCkTcCNl6fCbgQ1vT4WJGoNAGt0CGoORGoNINl6fyAAsEbgMgGV0BT4Q1BkhpvGoNJiQ1BwCfxkQ1ByBsvT4QBByQ1vT4WJGoNAGt0CGoORGoNINl6fCAINJGt8JT4TcCGuTcCwA1tgLVCbgWQNlzVDbgQ1ugg1BkCmDG1w1BkimDGuOAOAY1tiQ1CHQY1tgQwByA6FAFgwByQ6FGt9AgEJAgYArGAkBAgNIGtgwFAgNJkA1upIGCAgMkNlg1FiQ1BwA1rgicEgQ1ByBssTgsJNdoABGokBOAMtGlfYUgJmEgNt0A1qjdsA4tbtu0GtUDtu24A1F23QGtnbUIu27RsqGo0AloHBtA1ssAIEA4Nt0A1xiw1B2g1oho1BtgJFrZAB6A1xhY1B7Q1ngLPCwAKFloKBtA1xgoKC0A1p2ALGiwKB2hsmmw1JgFbbQPQGuMLGoPboA1n2wMIlqvCGuMAGoTakGpsWBoTajGofABxNbBoPaGsUGGpsBBoPbtA1wgEFGskAjY1NgA1CgTagg0AGp0CGoXboA1em3YgO27ARMhY1Cto1f7dggw1NgEoGoW0Gr9twEYCZw1C2zadGoW2CZ41DboI0aagIhCUJzaCGoVt0A1vgEtCweAGt8AiykDoA1Xho1WgFbUjYbD23AQiYZEUiw1YgEFDIakVgY1ZgECGoakUjY1EXq0LUi41cUguBNx8BTYI1D2A1XgEWGoXQlu27QUMCQPYho1cUgY1CEQO0CRLtDsE2AoK5SUhXaU4gCBB4plDAQNsgwCBGjQABgXboA1FAQWhBJGANwI1cfgI1J2iYCBg0DGjoACiwrIwwJI4A1ggELFY/QGpA0hAAQrG7Uba441kNw9DAwtgGkrdHtDUnU5sNNDQ=")) ;
-}
+function getzone1() {g.setColor("#00ffff");{(simplify (-88.5, -20, "Z1"));}zoning(minzone2, minhr);}
+function getzone2a() {g.setColor("#00ff00");{(simplify (-43.5, -21.5, "Z2"));}zoning(maxzone2, minzone2);}
+function getzone2b() {g.setColor("#00ff00");{(simplify (-20, 1.5, "Z2"));}zoning(maxzone2, minzone2);}
+function getzone2c() {g.setColor("#00ff00");{(simplify (3, 24, "Z2"));}zoning(maxzone2, minzone2);}
+function getzone3a() {g.setColor("#ffff00");{(simplify (25.5, 46.5, "Z3"));}zoning(maxzone3, maxzone2);}
+function getzone3b() {g.setColor("#ffff00");{(simplify (48, 69, "Z3"));}zoning(maxzone3, maxzone2);}
+function getzone3c() {g.setColor("#ffff00");{(simplify (70.5, 91.5, "Z3"));}zoning(maxzone3, maxzone2);}
+function getzone4a() {g.setColor("#ff8000");{(simplify (91, 114.5, "Z4"));}zoning(maxzone4, maxzone3);}
+function getzone4b() {g.setColor("#ff8000");{(simplify (116, 137.5, "Z4"));}zoning(maxzone4, maxzone3);}
+function getzone4c() {g.setColor("#ff8000");{(simplify (139, 160, "Z4"));}zoning(maxzone4, maxzone3);}
+function getzone5a() {g.setColor("#ff0000");{(simplify (161.5, 182.5, "Z5"));}zoning(maxzone5, maxzone4);}
+function getzone5b() {g.setColor("#ff0000");{(simplify (184, 205, "Z5"));}zoning(maxzone5, maxzone4);}
+function getzone5c() {g.setColor("#ff0000");{(simplify (206.5, 227.5, "Z5"));}zoning(maxzone5, maxzone4);}
 
 function getzonealert() {
- return require("heatshrink").decompress(atob("yOR4cA///gH4gOggHggOwgHwgHQgHoFjGSpMgL98DpMkGoICDyA0qhwyFAQppoGRICDpA1l5I1NAQOAGkVqGRpulgcSGqLdhhgyRAQdAGrtkFhUgBZY0bgyYPgQLHyA1akI1MwATEUkOpGphfGhKkegOJGpmSC46kdgoyLSpakchA1OpAZIgikagw1OpIaJgQREwA1TkQ1NeZrpMABdCaiikMGqViGpSMRUgo1cfCakEyAWQmQ1IpDATUgq5PGpQaQUhS5VAQY0VAAMJGqUSGo68RUhUADpw1iEYUAX5w1IwA1ZgA1CUho1IGjUAgI1CEBkCGsYABRhw1DoI1hSQY1OoEEGoMgGrraBEwNIGpxKCGr8BR4QjKIgo1ggDFDbRI1FgI1ggA1CyCwPGsLLFcygAbhKkCBZQ1mbQaSHIJYAegjaCwAKFgI1pgESGoOQGuMAGoOSoCtQAEDOCpA1xFhLjCGtMAFgMkGo4IFAEkSFgOQHxgAlFgOSGo+AGtMJGoNIBAw1qgA1BoAIFgiqFAEosGgVJGdQADgKbEa9jRENwY1BVQ4AlF4o7BGtqhByVIAo4AqF4NJGogFCAFUEF4MkHYwAriQ1BwA7DkA1sgQ1ByBxGAFYvByVAgA1wgI1BpCnFAFg1BpKnFAFjUCkA1CyQ1tageAGuKeDhI1BoA2uNAUBAQNIGtxoDAQNJGtxoDgg1BkA2uNAQ1ygAyBHAUkGt8SGomAGt0CGomQNl41EyQ1vhI1EoA1ugI1EpBsvGoQyvAHikCGV8Sa4QCBwA1ugQ1EyBsvGomSGt8JGolAGt0BGolINl41EpI1vggyBkA4CGuUSGoOAG1xoCgQCByA1uNAbaCGtxoDhI1BoA2uNAUBAQNIGtxoDgjdBkA1xgA1Bkg1tTwkSGoOAG1o1BpMAgQ1ByA1taginEGuCnEAFg1BkinFAFkSGoOAOIY7CGtuQHYwAqgQ1EAooAqF4OSAog1tgA1BoAEBgLXtbQY1CNwcgGdUJMozaCGtSbBa4ZxCbVg1CpKhFHwwAlGo6qByVIGtkgHxgAkgg1HBAUkGtYsGiQIByA1xgQIByRsoGoWABIsJGoNIGuMBGoLjGGsjOHVpIAgiQ1JIJY1qgQLByVAGs+SBhEJbQQ1xgI1CbUg1MgEEGoWAGsTLOIho1ngAOCpA1xbQQ1igEJGpsAGobaggQmEABYOCI5o1TEYQ1NCIdJGr0SpMgEwQAMhA1Ckg1fkmAEwIAOGoWQGr+SCiA1CbTo1DUJzaCCgS5BGrRWDGqEAhI1CXII1vgA1DUjMEGqy5EpI1XKbI1DUi41ZgIa0eQtJkAYShI1EXq0CUi41cRIuANyCbBGrkAggdCyBZCChgOBpAXEGrCkDGoZuLBwkSXKikLU4gCBPpICCJoQ0aYpICDkAIHdiQAPGpMkTAQLGgI0eSpACCwQ1IoA1ggDFCFguQGpA0hAAQsHhLXHGshuHoI1FkA0lbo9Iak6nNHYRoYA")) ;
+ const HRzonemax = require("graphics_utils");
+ var centreX1,centreY1,maxRadius1 = 1;
+ let minRadius = 0.40 * g.getWidth();
+ let startAngle1 = HRzonemax.degreesToRadians(-90);
+ let endAngle1 = HRzonemax.degreesToRadians(270);
+ g.setFont("Vector",38);g.setColor("#ff0000");
+ HRzonemax.fillArc(g, centreX, centreY, minRadius, maxRadius, startAngle1, endAngle1);
+ g.drawString("ALERT", 26,66);
 }
-g.setFont("Vector",20);
-//Subdivided zones for better readability of zones when calling the background images. //Changing HR zones will trigger the change of the background image and the HR to change zone.
+//Subdivided zones for better readability of zones when calling the images. //Changing HR zones will trigger the function with the image and previous&next HR zones.
 
-if (hr <= minhr) {
-  console.log("HR too low");
-} else if (hr <= hrr*0.6 + minhr) {
-  g.drawImage(getzone1(),0,0,{scale:1.2});g.drawString("Z1", 32,78);g.drawString(minzone2, 62,20);
-} else if (hr <= hrr*0.64 + minhr) {
-  g.drawImage(getzone2a(),0,0,{scale:1.2});g.drawString("Z2", 32,78);g.drawString(maxzone2, 62,20);g.drawString(minzone2, 62,136);
-} else if (hr <= hrr*0.67+minhr) {
-  g.drawImage(getzone2b(),0,0,{scale:1.2});g.drawString("Z2", 32,78);g.drawString(maxzone2, 62,20);g.drawString(minzone2, 62,136);
-} else if (hr <= hrr * 0.7 + minhr) {
- g.drawImage(getzone2c(),0,0,{scale:1.2});g.drawString("Z2", 32,78);g.drawString(maxzone2, 62,20);g.drawString(minzone2, 62,136);
-} else if (hr <= hrr * 0.74 + minhr) {
-  g.drawImage(getzone3a(),0,0,{scale:1.2});g.drawString("Z3", 32,78);g.drawString(maxzone3, 62,20);g.drawString(maxzone2, 62,136);
-} else if (hr <= hrr * 0.77 + minhr) {
-  g.drawImage(getzone3b(),0,0,{scale:1.2});g.drawString("Z3", 32,78);g.drawString(maxzone3, 62,20);g.drawString(maxzone2, 62,136);
-} else if (hr <= hrr * 0.8 + minhr) {
-  g.drawImage(getzone3c(),0,0,{scale:1.2});g.drawString("Z3", 32,78);g.drawString(maxzone3, 62,20);g.drawString(maxzone2, 62,136);
-} else if (hr <= hrr * 0.84 + minhr) {
-  g.drawImage(getzone4a(),0,0,{scale:1.2});g.drawString("Z4", 32,78);g.drawString(maxzone4, 62,20);g.drawString(maxzone3, 62,136);
-} else if (hr <= hrr * 0.87 + minhr) {
-  g.drawImage(getzone4b(),0,0,{scale:1.2});g.drawString("Z4", 32,78);g.drawString(maxzone4, 62,20);g.drawString(maxzone3, 62,136);
-} else if (hr <= hrr * 0.9 + minhr) {
-  g.drawImage(getzone4c(),0,0,{scale:1.2});g.drawString("Z4", 32,78);g.drawString(maxzone4, 62,20);g.drawString(maxzone3, 62,136);
-} else if (hr <= hrr * 0.94 + minhr) {
-  g.drawImage(getzone5a(),0,0,{scale:1.2});g.drawString("Z5", 32,78);g.drawString(maxzone5, 62,20);g.drawString(maxzone4, 62,136);
-} else if (hr <= hrr * 0.96 + minhr) {
-  g.drawImage(getzone5b(),0,0,{scale:1.2});g.drawString("Z5", 32,78);g.drawString(maxzone5, 62,20);g.drawString(maxzone4, 62,136);
-} else if (hr <= hrr * 0.98 + minhr) {
-  g.drawImage(getzone5c(),0,0,{scale:1.2});g.drawString("Z5", 32,78);g.drawString(maxzone5, 62,20);g.drawString(maxzone4, 62,136);
-} else if (hr >= maxhr - 2) {
-  g.clear();g.drawImage(getzonealert(),0,0,{scale:1.2});g.setFont("Vector",38);g.drawString("ALERT", 20,53);g.drawString("HR limit", 18,84);
-}
+  if (hr <= hrr*0.6 + minhr) {(getzone1());
+} else if (hr <= hrr*0.64 + minhr) {(getzone2a());
+} else if (hr <= hrr*0.67+minhr) {(getzone2b());
+} else if (hr <= hrr * 0.7 + minhr) {(getzone2c());
+} else if (hr <= hrr * 0.74 + minhr) {(getzone3a());
+} else if (hr <= hrr * 0.77 + minhr) {(getzone3b());
+} else if (hr <= hrr * 0.8 + minhr) {(getzone3c());
+} else if (hr <= hrr * 0.84 + minhr) {(getzone4a());
+} else if (hr <= hrr * 0.87 + minhr) {(getzone4b());
+} else if (hr <= hrr * 0.9 + minhr) {(getzone4c());
+} else if (hr <= hrr * 0.94 + minhr) {(getzone5a());
+} else if (hr <= hrr * 0.96 + minhr) {(getzone5b());
+} else if (hr <= hrr * 0.98 + minhr) {(getzone5c());
+} else if (hr >= maxhr - 2) {g.clear();(getzonealert());}
